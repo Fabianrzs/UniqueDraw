@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TravelConnect.Domain.Entities.Base;
+namespace UniqueDraw.Domain.Entities.Base;
 
 public class EntityBase : DomainEntity, IEntityBase<Guid>
 {

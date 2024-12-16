@@ -1,4 +1,4 @@
-﻿namespace TravelConnect.Domain.Entities.Base;
+﻿namespace UniqueDraw.Domain.Entities.Base;
 
 public class DomainEntity
 {
