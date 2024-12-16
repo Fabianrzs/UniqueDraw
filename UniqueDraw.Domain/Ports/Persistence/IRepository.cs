@@ -45,4 +45,5 @@ public interface IRepository<T> where T : class, IEntityBase<Guid>
     /// </summary>
     /// <param name="entity">Entidad a eliminar.</param>
     Task DeleteAsync(T entity);
+    Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
 }
