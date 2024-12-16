@@ -1,4 +1,5 @@
 ﻿using UniqueDraw.Domain.Entities.Base;
+using UniqueDraw.Domain.Exceptions;
 
 namespace UniqueDraw.Domain.Entities.UniqueDraw;
 
@@ -32,7 +33,7 @@ public class AssignedNumber : EntityBase
             }
         }
 
-        throw new InvalidOperationException("No hay números disponibles para asignar.");
+        throw new BusinessRuleViolationException("No hay números disponibles para asignar.");
     }
 
     private static bool IsValidNumber(string number)
