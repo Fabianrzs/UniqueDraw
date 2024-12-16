@@ -9,7 +9,6 @@ public static class Startup
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-
         services.AddPesistenceServices(configuration);
         services.AddDomainServices();
         services.AddSecurityServices(configuration);
