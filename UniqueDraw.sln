@@ -3,14 +3,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F5D79CAF-E975-47A4-BC01-17D51A5D4218}"
-	ProjectSection(SolutionItems) = preProject
-		UniqueDraw.Domain\UniqueDraw.Domain.csproj = UniqueDraw.Domain\UniqueDraw.Domain.csproj
-	EndProjectSection
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{95700054-7E88-405D-83D3-87A11601FD83}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db", "db", "{DD162BDE-8E20-4D60-A043-54188539D4CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{CAF4B6E7-9A45-4D9A-9B91-2BDC9EB20D9C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniqueDraw.Domain", "UniqueDraw.Domain\UniqueDraw.Domain.csproj", "{28805581-5551-46DD-8324-4201FD036136}"
 EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{28805581-5551-46DD-8324-4201FD036136}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28805581-5551-46DD-8324-4201FD036136}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28805581-5551-46DD-8324-4201FD036136}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28805581-5551-46DD-8324-4201FD036136}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{28805581-5551-46DD-8324-4201FD036136} = {95700054-7E88-405D-83D3-87A11601FD83}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {75C2CB2C-AF7D-4A88-8ED0-728B7FD50312}
