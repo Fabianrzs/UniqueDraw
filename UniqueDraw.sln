@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniqueDraw.Api", "UniqueDra
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "UniqueDraw", "UniqueDraw\UniqueDraw.sqlproj", "{F415A93F-AECA-48E4-88CD-57424DE53AAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniqueDraw.Test", "UniqueDraw.Test\UniqueDraw.Test.csproj", "{C288FDF1-DAF6-4838-80CA-CE209F525C0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{F415A93F-AECA-48E4-88CD-57424DE53AAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F415A93F-AECA-48E4-88CD-57424DE53AAA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F415A93F-AECA-48E4-88CD-57424DE53AAA}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{C288FDF1-DAF6-4838-80CA-CE209F525C0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C288FDF1-DAF6-4838-80CA-CE209F525C0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C288FDF1-DAF6-4838-80CA-CE209F525C0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C288FDF1-DAF6-4838-80CA-CE209F525C0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +56,7 @@ Global
 		{1B569AE1-45A1-46A3-B202-1029E2D41DCC} = {95700054-7E88-405D-83D3-87A11601FD83}
 		{017185B1-F5BA-4FA4-95E5-BEE7ADDDA67E} = {95700054-7E88-405D-83D3-87A11601FD83}
 		{F415A93F-AECA-48E4-88CD-57424DE53AAA} = {DD162BDE-8E20-4D60-A043-54188539D4CD}
+		{C288FDF1-DAF6-4838-80CA-CE209F525C0C} = {CAF4B6E7-9A45-4D9A-9B91-2BDC9EB20D9C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {75C2CB2C-AF7D-4A88-8ED0-728B7FD50312}
