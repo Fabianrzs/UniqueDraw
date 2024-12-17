@@ -12,8 +12,8 @@ public static class SecurityExtensions
 {
     public static IServiceCollection AddSecurityServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtSettingKey = configuration["UniqueDraw.JwtSettings-Key"]!;
-        var encriptionKey = configuration["UniqueDraw.Encryption-Key"]!;
+        var jwtSettingKey = configuration["JwtSettings:Key"]!;
+        var encriptionKey = configuration["Encryption:Key"]!;
 
         services.AddScoped<IPasswordHasher, PasswordHasher>();
 
