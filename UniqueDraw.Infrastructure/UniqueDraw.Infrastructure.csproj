@@ -8,6 +8,8 @@
 
 
 	<ItemGroup>
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
@@ -25,10 +27,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\UniqueDraw.Domain\UniqueDraw.Domain.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Profile\" />
 	</ItemGroup>
 	
 </Project>

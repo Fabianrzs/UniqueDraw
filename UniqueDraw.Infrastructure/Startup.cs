@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UniqueDraw.Infrastructure.Extensions;
+using UniqueDraw.Infrastructure.Filters;
 
 namespace UniqueDraw.Infrastructure;
 
@@ -15,7 +16,7 @@ public static class Startup
         services.AddMapperServices();
         services.AddSwaggerServices();
         services.AddCorsPolicyServices();
-        services.AddControllers();
+        services.AddControllers(options => { options.Filters.Add<ValidationFilter>(); });
     }
 
     public static void UseInfrastructure(this WebApplication app)

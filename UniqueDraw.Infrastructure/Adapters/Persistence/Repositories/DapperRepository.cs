@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using System.Data;
+using System.Data.Common;
 using System.Linq.Expressions;
+using System.Text;
 using UniqueDraw.Domain.Entities.Base;
 using UniqueDraw.Domain.Ports.Persistence;
 using UniqueDraw.Infrastructure.Helpers;
@@ -40,28 +42,26 @@ public class DapperRepository<T>(IDbConnection connection) : IRepository<T> wher
 
     public async Task AddAsync(T entity)
     {
-        var tableName = typeof(T).Name;
-        var columns = string.Join(", ", entity.GetType().GetProperties().Select(p => p.Name));
-        var values = string.Join(", ", entity.GetType().GetProperties().Select(p => $"@{p.Name}"));
-
-        var sql = $"INSERT INTO {tableName} ({columns}) VALUES ({values})";
-        await connection.ExecuteAsync(sql, entity);
+        var spName = $"sp_add{typeof(T).Name}";
+        var parameters = GetParameters(entity);
+        await connection.ExecuteAsync(spName, parameters, 
+            commandType: CommandType.StoredProcedure);
     }
 
     public async Task UpdateAsync(T entity)
     {
-        var tableName = typeof(T).Name;
-        var setClause = string.Join(", ", entity.GetType().GetProperties().Select(p => $"{p.Name} = @{p.Name}"));
-
-        var sql = $"UPDATE {tableName} SET {setClause} WHERE Id = @Id";
-        await connection.ExecuteAsync(sql, entity);
+        var spName = $"sp_update{typeof(T).Name}";
+        var parameters = GetParameters(entity);
+        await connection.ExecuteAsync(spName, parameters,
+            commandType: CommandType.StoredProcedure);
     }
+
 
     public async Task DeleteAsync(T entity)
     {
-        var tableName = typeof(T).Name;
-        var sql = $"DELETE FROM {tableName} WHERE Id = @Id";
-        await connection.ExecuteAsync(sql, new { entity.Id });
+        var spName = $"sp_delete{typeof(T).Name}";
+        await connection.ExecuteAsync(spName, 
+            new { entity.Id }, commandType: CommandType.StoredProcedure); 
     }
 
     public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
@@ -81,4 +81,44 @@ public class DapperRepository<T>(IDbConnection connection) : IRepository<T> wher
 
         return result > 0;
     }
+
+    private static DynamicParameters GetParameters(T entity)
+    {
+        var parameters = new DynamicParameters();
+        foreach (var property in typeof(T).GetProperties())
+        {
+            if (IsSupportedSqlType(property.PropertyType))
+            {
+                var value = property.GetValue(entity);
+                if (value != null && (!IsDefaultValue(value)
+                    || value.GetType() == typeof(bool)))
+                {
+                    parameters.Add($"@{property.Name}", value);
+                }
+            }
+        }
+        return parameters;
+    }
+
+    private static string GetSqlQueryFromExpression(Expression<Func<T, bool>> filter)
+    {
+        var queryBody = filter.Body.ToString();
+        var paramName = filter.Parameters[0].Name;
+        var query = new StringBuilder(queryBody);
+        query.Replace(paramName + ".", string.Empty);
+        query.Replace("AndAlso", "AND");
+        query.Replace("OrElse", "OR");
+        return $"SELECT * FROM {typeof(T).Name} WHERE {query}";
+    }
+    private static bool IsSupportedSqlType(Type type) =>
+     type.IsPrimitive || type.IsEnum || type == typeof(string) ||
+     type == typeof(decimal) || type == typeof(DateTime) ||
+     type == typeof(Guid) || type == typeof(TimeSpan) ||
+     type == typeof(byte[]);
+
+    private static bool IsDefaultValue(object value) =>
+        value == null ||
+        (value is string str && string.IsNullOrEmpty(str)) ||
+        (value.GetType().IsValueType &&
+        value.Equals(Activator.CreateInstance(value.GetType())));
 }

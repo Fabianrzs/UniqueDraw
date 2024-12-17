@@ -33,7 +33,7 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
     {
         switch (exception)
         {
-            case ValidationException validationException:
+            case Domain.Exceptions.ValidationException validationException:
                 await OnCustomValidationException(context, validationException);
                 break;
 
@@ -60,7 +60,7 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
         await SendResult(context, exception, HttpStatusCode.UnprocessableContent);
     }
 
-    private static async Task OnCustomValidationException(HttpContext context, ValidationException exception)
+    private static async Task OnCustomValidationException(HttpContext context, Domain.Exceptions.ValidationException exception)
     {
         await SendResult(context, exception, HttpStatusCode.BadRequest);
     }

@@ -8,15 +8,13 @@ using UniqueDraw.Domain.Attributes;
 namespace UniqueDraw.Domain.Services;
 
 [DomainService]
-public class ProductService(IUnitOfWork unitOfWork, 
-    IRepository<Product> repository, 
+public class ProductService(IRepository<Product> repository, 
     IMappingService mapper)
 {
     public async Task<ProductResponseDTO> CreateProductAsync(ProductCreateDTO productDto)
     {
         var product = mapper.Map<Product>(productDto);
         await repository.AddAsync(product);
-        await unitOfWork.CommitAsync();
         return mapper.Map<Product, ProductResponseDTO>(product);
     }
 
