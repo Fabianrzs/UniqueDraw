@@ -8,6 +8,7 @@ using UniqueDraw.Domain.Exceptions;
 using UniqueDraw.Domain.Models.Create;
 using UniqueDraw.Domain.Extensions;
 using UniqueDraw.Domain.Attributes;
+using UniqueDraw.Domain.Models.Request;
 
 namespace UniqueDraw.Domain.Services;
 

@@ -10,15 +10,8 @@ namespace UniqueDraw.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class AssignedNumbersController : ControllerBase
+public class AssignedNumbersController(AssignedNumberService assignedNumberService) : ControllerBase
 {
-    private readonly AssignedNumberService _assignedNumberService;
-
-    public AssignedNumbersController(AssignedNumberService assignedNumberService)
-    {
-        _assignedNumberService = assignedNumberService;
-    }
-
     /// <summary>
     /// Asigna un número único a un cliente en un sorteo.
     /// </summary>
@@ -34,7 +27,7 @@ public class AssignedNumbersController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var result = await _assignedNumberService.AssignNumberAsync(requestDto);
+        var result = await assignedNumberService.AssignNumberAsync(requestDto);
         return CreatedAtAction(nameof(GetAssignedNumbersByClient), new { clientId = result.ClientId }, result);
     }
 
@@ -48,7 +41,7 @@ public class AssignedNumbersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAssignedNumbersByClient(Guid clientId)
     {
-        var result = await _assignedNumberService.GetAssignedNumbersByClientAsync(clientId);
+        var result = await assignedNumberService.GetAssignedNumbersByClientAsync(clientId);
 
         if (result == null || result.Count == 0)
         {

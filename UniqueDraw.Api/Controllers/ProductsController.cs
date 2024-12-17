@@ -10,15 +10,8 @@ namespace UniqueDraw.API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    public class ProductsController(ProductService productService) : ControllerBase
     {
-        private readonly ProductService _productService;
-
-        public ProductsController(ProductService productService)
-        {
-            _productService = productService;
-        }
-
         /// <summary>
         /// Crea un nuevo producto.
         /// </summary>
@@ -34,7 +27,7 @@ namespace UniqueDraw.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _productService.CreateProductAsync(productDto);
+            var result = await productService.CreateProductAsync(productDto);
             return CreatedAtAction(nameof(GetProductsByClient), new { clientId = result.ClientId }, result);
         }
 
@@ -48,7 +41,7 @@ namespace UniqueDraw.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetProductsByClient(Guid clientId)
         {
-            var result = await _productService.GetProductsByClientIdAsync(clientId);
+            var result = await productService.GetProductsByClientIdAsync(clientId);
 
             if (result == null || result.Count == 0)
             {

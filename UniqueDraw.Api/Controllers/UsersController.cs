@@ -11,15 +11,8 @@ namespace UniqueDraw.API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController(UserService userService) : ControllerBase
     {
-        private readonly UserService _userService;
-
-        public UsersController(UserService userService)
-        {
-            _userService = userService;
-        }
-
         /// <summary>
         /// Crea un nuevo usuario.
         /// </summary>
@@ -38,7 +31,7 @@ namespace UniqueDraw.API.Controllers
 
             try
             {
-                var result = await _userService.CreateUserAsync(userDto);
+                var result = await userService.CreateUserAsync(userDto);
                 return CreatedAtAction(nameof(GetUserById), new { userId = result.Id }, result);
             }
             catch (BusinessRuleViolationException ex)
@@ -57,7 +50,7 @@ namespace UniqueDraw.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUsersByClient(Guid clientId)
         {
-            var result = await _userService.GetUsersByClientIdAsync(clientId);
+            var result = await userService.GetUsersByClientIdAsync(clientId);
 
             if (result == null || result.Count == 0)
             {
@@ -79,7 +72,7 @@ namespace UniqueDraw.API.Controllers
         {
             try
             {
-                var result = await _userService.GetUserByIdAsync(userId);
+                var result = await userService.GetUserByIdAsync(userId);
                 return Ok(result);
             }
             catch (NotFoundException ex)

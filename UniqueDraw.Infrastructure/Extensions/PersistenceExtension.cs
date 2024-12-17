@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data;
-using System.Data.SqlClient;
 using UniqueDraw.Domain.Ports.Persistence;
 using UniqueDraw.Infrastructure.Adapters.Persistence.EFContext;
 using UniqueDraw.Infrastructure.Adapters.Persistence.Repositories;
@@ -27,6 +27,9 @@ public static class PersistenceExtension
         svc.AddScoped<IUnitOfWork, UnitOfWork>();
 
         /*svc.AddTransient(typeof(IRepository<>), typeof(Repository<>));*/
+        
+
+
         return svc;
     }
 }

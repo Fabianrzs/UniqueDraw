@@ -11,15 +11,8 @@ namespace UniqueDraw.API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class ClientController : ControllerBase
+    public class ClientController(ClientService clientService) : ControllerBase
     {
-        private readonly ClientService _clientService;
-
-        public ClientController(ClientService clientService)
-        {
-            _clientService = clientService;
-        }
-
         /// <summary>
         /// Crea un nuevo cliente.
         /// </summary>
@@ -35,7 +28,7 @@ namespace UniqueDraw.API.Controllers
 
             try
             {
-                var client = await _clientService.CreateClientAsync(request);
+                var client = await clientService.CreateClientAsync(request);
                 return CreatedAtAction(nameof(GetClientById), new { clientId = client.Id }, client);
             }
             catch (Exception ex)
@@ -56,7 +49,7 @@ namespace UniqueDraw.API.Controllers
         {
             try
             {
-                var apiKey = await _clientService.RegenerateApiKeyAsync(clientId);
+                var apiKey = await clientService.RegenerateApiKeyAsync(clientId);
                 return Ok(apiKey);
             }
             catch (Exception ex)
@@ -80,7 +73,7 @@ namespace UniqueDraw.API.Controllers
 
             try
             {
-                var token = await _clientService.AuthenticateClientAsync(request);
+                var token = await clientService.AuthenticateClientAsync(request);
                 return Ok(token);
             }
             catch (Exception ex)
@@ -101,7 +94,7 @@ namespace UniqueDraw.API.Controllers
         {
             try
             {
-                var client = await _clientService.GetClientByIdAsync(clientId);
+                var client = await clientService.GetClientByIdAsync(clientId);
                 return Ok(client);
             }
             catch (Exception ex)

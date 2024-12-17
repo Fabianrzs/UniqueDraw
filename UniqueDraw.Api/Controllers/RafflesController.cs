@@ -10,15 +10,8 @@ namespace UniqueDraw.API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class RafflesController : ControllerBase
+    public class RafflesController(RaffleService raffleService) : ControllerBase
     {
-        private readonly RaffleService _raffleService;
-
-        public RafflesController(RaffleService raffleService)
-        {
-            _raffleService = raffleService;
-        }
-
         /// <summary>
         /// Crea un nuevo sorteo.
         /// </summary>
@@ -34,7 +27,7 @@ namespace UniqueDraw.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _raffleService.CreateRaffleAsync(raffleDto);
+            var result = await raffleService.CreateRaffleAsync(raffleDto);
             return CreatedAtAction(nameof(GetActiveRafflesByClient), new { clientId = result.ClientId }, result);
         }
 
@@ -48,7 +41,7 @@ namespace UniqueDraw.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetActiveRafflesByClient(Guid clientId)
         {
-            var result = await _raffleService.GetActiveRafflesByClientIdAsync(clientId);
+            var result = await raffleService.GetActiveRafflesByClientIdAsync(clientId);
 
             if (result == null || result.Count == 0)
             {
