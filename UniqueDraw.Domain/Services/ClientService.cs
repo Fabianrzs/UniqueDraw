@@ -25,13 +25,17 @@ public class ClientService(
 
         var client = mapper.Map<Client>(request);
         client.EncryptProperties(encryptionService);
-        client.Password = passwordHasher.HashPassword(request.Password!);
-        client.ApiKey = tokenService.GenerateToken(request.Name!, client.Id);   
 
+        client.Password = passwordHasher.HashPassword(request.Password!);
+        client.ApiKey = encryptionService.Encrypt(Guid.NewGuid().ToString()!).ToLower().Trim();
+
+
+        var token = tokenService.GenerateToken(request.Name!, client.Id);
         await repository.AddAsync(client);
         await unitOfWork.CommitAsync();
-
-        return mapper.Map<ClientResponseDTO>(client);
+        var response = mapper.Map<ClientResponseDTO>(client);
+        response.Token = token;
+        return response;
     }
 
     public async Task<string> RegenerateApiKeyAsync(Guid clientId)
@@ -39,7 +43,8 @@ public class ClientService(
         var client = await repository.GetByIdAsync(clientId)
             ?? throw new NotFoundException("Cliente no encontrado.", clientId);
 
-        client.ApiKey = tokenService.GenerateToken(encryptionService.Decrypt(client.Name!), client.Id);
+        client.ApiKey = encryptionService.Encrypt(Guid.NewGuid().ToString()!).ToLower().Trim();
+
         await unitOfWork.CommitAsync();
 
         return client.ApiKey;
@@ -56,6 +61,16 @@ public class ClientService(
             throw new UnauthorizedException("Usuario o contraseña incorrecta.");
 
         return tokenService.GenerateToken(request.UserName, client.Id);
+    }
+
+    public async Task<string> AuthenticateClientAsync(string request)
+    {
+        var client = (await repository.FindAsync(c => c.ApiKey == request)).FirstOrDefault()
+            ?? throw new UnauthorizedException("Apikey No valida o incorrecta.");
+        
+        client.DecryptProperties(encryptionService);
+
+        return tokenService.GenerateToken(client.UserName!, client.Id);
     }
 
     public async Task<ClientResponseDTO> GetClientByIdAsync(Guid clientId)

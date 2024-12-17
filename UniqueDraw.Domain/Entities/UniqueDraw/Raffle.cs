@@ -7,6 +7,6 @@ public class Raffle : EntityBase
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public Guid ClientId { get; set; }
-    public Client Client { get; set; } = new();
+    public Client Client { get; set; } = null!;
     public ICollection<AssignedNumber> AssignedNumbers { get; set; } = [];
 }

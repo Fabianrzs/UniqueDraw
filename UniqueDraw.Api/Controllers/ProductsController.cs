@@ -22,11 +22,6 @@ namespace UniqueDraw.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDTO productDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var result = await productService.CreateProductAsync(productDto);
             return CreatedAtAction(nameof(GetProductsByClient), new { clientId = result.ClientId }, result);
         }
@@ -42,12 +37,6 @@ namespace UniqueDraw.API.Controllers
         public async Task<IActionResult> GetProductsByClient(Guid clientId)
         {
             var result = await productService.GetProductsByClientIdAsync(clientId);
-
-            if (result == null || result.Count == 0)
-            {
-                return NotFound($"No se encontraron productos para el cliente con ID {clientId}.");
-            }
-
             return Ok(result);
         }
     }

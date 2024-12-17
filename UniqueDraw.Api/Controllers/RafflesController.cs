@@ -22,11 +22,6 @@ namespace UniqueDraw.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateRaffle([FromBody] RaffleCreateDTO raffleDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var result = await raffleService.CreateRaffleAsync(raffleDto);
             return CreatedAtAction(nameof(GetActiveRafflesByClient), new { clientId = result.ClientId }, result);
         }
@@ -42,12 +37,6 @@ namespace UniqueDraw.API.Controllers
         public async Task<IActionResult> GetActiveRafflesByClient(Guid clientId)
         {
             var result = await raffleService.GetActiveRafflesByClientIdAsync(clientId);
-
-            if (result == null || result.Count == 0)
-            {
-                return NotFound($"No se encontraron sorteos activos para el cliente con ID {clientId}.");
-            }
-
             return Ok(result);
         }
     }

@@ -6,12 +6,12 @@ namespace UniqueDraw.Domain.Entities.UniqueDraw;
 public class AssignedNumber : EntityBase
 {
     public Guid ClientId { get; set; }
-    public Client Client { get; set; } = new();
+    public Client Client { get; set; } = null!;
     public Guid UserId { get; set; }
-    public User User { get; set; } = new();
+    public User User { get; set; } = null!;
     public string Number { get; set; } = string.Empty;
     public Guid RaffleId { get; set; }
-    public Raffle Raffle { get; set; } = new();
+    public Raffle Raffle { get; set; } = null!;
 
     private const int MinNumber = 1;
     private const int MaxNumber = 99999;

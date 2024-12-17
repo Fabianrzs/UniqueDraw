@@ -32,4 +32,10 @@ public class AssignedNumberService(IUnitOfWork unitOfWork,
         var assignedNumbers = await repository.FindAsync(an => an.ClientId == clientId);
         return mapper.Map<AssignedNumberResponseDTO>(assignedNumbers);
     }
+
+    public async Task<ICollection<AssignedNumberResponseDTO>> GetAssignedNumbersByRaffleAsync(Guid raffleId)
+    {
+        var assignedNumbers = await repository.FindAsync(an => an.RaffleId == raffleId);
+        return mapper.Map<AssignedNumberResponseDTO>(assignedNumbers);
+    }
 }

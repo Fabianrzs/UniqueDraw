@@ -1,48 +1,75 @@
 ﻿using System.Linq.Expressions;
 
-namespace UniqueDraw.Infrastructure.Helpers;
-public static class ExpressionToSqlTranslator
+namespace UniqueDraw.Infrastructure.Helpers
 {
-    public static string Translate<T>(Expression<Func<T, bool>> expression)
+    public static class ExpressionToSqlTranslator
     {
-        if (expression.Body is BinaryExpression binaryExpression)
+        public static string Translate<T>(Expression<Func<T, bool>> expression)
         {
-            return TranslateBinaryExpression(binaryExpression);
+            if (expression.Body is BinaryExpression binaryExpression)
+            {
+                return TranslateBinaryExpression(binaryExpression);
+            }
+
+            throw new NotSupportedException("Solo se soportan expresiones binarias.");
         }
 
-        throw new NotSupportedException("Solo se soportan expresiones binarias.");
-    }
-
-    private static string TranslateBinaryExpression(BinaryExpression binaryExpression)
-    {
-        var left = TranslateExpression(binaryExpression.Left);
-        var right = TranslateExpression(binaryExpression.Right);
-        var @operator = TranslateOperator(binaryExpression.NodeType);
-
-        return $"{left} {@operator} {right}";
-    }
-
-    private static string TranslateExpression(Expression expression)
-    {
-        return expression switch
+        private static string TranslateBinaryExpression(BinaryExpression binaryExpression)
         {
-            MemberExpression member => member.Member.Name,
-            ConstantExpression constant => $"'{constant.Value}'",
-            _ => throw new NotSupportedException($"Tipo de expresión no soportada: {expression.NodeType}")
-        };
-    }
+            var left = TranslateExpression(binaryExpression.Left);
+            var right = TranslateExpression(binaryExpression.Right);
+            var @operator = TranslateOperator(binaryExpression.NodeType);
 
-    private static string TranslateOperator(ExpressionType expressionType)
-    {
-        return expressionType switch
+            return $"{left} {@operator} {right}";
+        }
+
+        private static string TranslateExpression(Expression expression)
         {
-            ExpressionType.Equal => "=",
-            ExpressionType.NotEqual => "<>",
-            ExpressionType.GreaterThan => ">",
-            ExpressionType.GreaterThanOrEqual => ">=",
-            ExpressionType.LessThan => "<",
-            ExpressionType.LessThanOrEqual => "<=",
-            _ => throw new NotSupportedException($"Operador no soportado: {expressionType}")
-        };
+            switch (expression)
+            {
+                case MemberExpression member when member.Expression is ConstantExpression constant:
+                    return GetValueFromMemberExpression(member, constant);
+
+                case ConstantExpression constant:
+                    return $"'{constant.Value}'";
+
+                case UnaryExpression unary when unary.Operand is MemberExpression memberExpression:
+                    return TranslateExpression(memberExpression);
+
+                case MemberExpression memberExpression:
+                    return memberExpression.Member.Name;
+
+                default:
+                    throw new NotSupportedException($"Tipo de expresión no soportada: {expression.NodeType}");
+            }
+        }
+
+        private static string GetValueFromMemberExpression(MemberExpression member, ConstantExpression constant)
+        {
+            var container = constant.Value;
+            var fieldInfo = member.Member as System.Reflection.FieldInfo;
+            var value = fieldInfo?.GetValue(container);
+
+            return value switch
+            {
+                string str => $"'{str}'",
+                Guid guid => $"'{guid}'",
+                _ => value?.ToString() ?? "NULL"
+            };
+        }
+
+        private static string TranslateOperator(ExpressionType expressionType)
+        {
+            return expressionType switch
+            {
+                ExpressionType.Equal => "=",
+                ExpressionType.NotEqual => "<>",
+                ExpressionType.GreaterThan => ">",
+                ExpressionType.GreaterThanOrEqual => ">=",
+                ExpressionType.LessThan => "<",
+                ExpressionType.LessThanOrEqual => "<=",
+                _ => throw new NotSupportedException($"Operador no soportado: {expressionType}")
+            };
+        }
     }
 }

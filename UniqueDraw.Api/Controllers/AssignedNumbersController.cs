@@ -22,11 +22,6 @@ public class AssignedNumbersController(AssignedNumberService assignedNumberServi
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AssignNumber([FromBody] AssignedNumberRequestDTO requestDto)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         var result = await assignedNumberService.AssignNumberAsync(requestDto);
         return CreatedAtAction(nameof(GetAssignedNumbersByClient), new { clientId = result.ClientId }, result);
     }
@@ -36,18 +31,26 @@ public class AssignedNumbersController(AssignedNumberService assignedNumberServi
     /// </summary>
     /// <param name="clientId">Identificador único del cliente.</param>
     /// <returns>Lista de números asignados.</returns>
-    [HttpGet("{clientId:guid}")]
+    [HttpGet("{clientId:guid}/AssignedNumbersByClient")]
     [ProducesResponseType(typeof(ICollection<AssignedNumberResponseDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAssignedNumbersByClient(Guid clientId)
     {
         var result = await assignedNumberService.GetAssignedNumbersByClientAsync(clientId);
+        return Ok(result);
+    }
 
-        if (result == null || result.Count == 0)
-        {
-            return NotFound($"No se encontraron números asignados para el cliente con ID {clientId}.");
-        }
-
+    /// <summary>
+    /// Obtiene los números asignados a un sorteo específico.
+    /// </summary>
+    /// <param name="raffleId">Identificador único del cliente.</param>
+    /// <returns>Lista de números asignados.</returns>
+    [HttpGet("{raffleId:guid}/AssignedNumbersByRaffle")]
+    [ProducesResponseType(typeof(ICollection<AssignedNumberResponseDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAssignedNumbersByRaffle(Guid raffleId)
+    {
+        var result = await assignedNumberService.GetAssignedNumbersByRaffleAsync(raffleId);
         return Ok(result);
     }
 }

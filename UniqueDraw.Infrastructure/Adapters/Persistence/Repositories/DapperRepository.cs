@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using System.Data;
-using System.Data.Common;
 using System.Linq.Expressions;
 using System.Text;
 using UniqueDraw.Domain.Entities.Base;
@@ -12,14 +11,14 @@ public class DapperRepository<T>(IDbConnection connection) : IRepository<T> wher
 {
     public async Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes)
     {
-        var tableName = typeof(T).Name;
+        var tableName = $"{typeof(T).Name}s";
         var sql = $"SELECT * FROM {tableName} WHERE Id = @Id";
         return await connection.QuerySingleOrDefaultAsync<T>(sql, new { Id = id });
     }
 
     public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
     {
-        var tableName = typeof(T).Name;
+        var tableName = $"{typeof(T).Name}s";
         var sql = $"SELECT * FROM {tableName}";
         return await connection.QueryAsync<T>(sql);
     }
@@ -31,7 +30,7 @@ public class DapperRepository<T>(IDbConnection connection) : IRepository<T> wher
             throw new ArgumentNullException(nameof(predicate), "El predicado no puede ser nulo.");
         }
 
-        var tableName = typeof(T).Name;
+        var tableName = $"{typeof(T).Name}s";
 
         string whereClause = ExpressionToSqlTranslator.Translate(predicate);
 
@@ -71,15 +70,10 @@ public class DapperRepository<T>(IDbConnection connection) : IRepository<T> wher
             throw new ArgumentNullException(nameof(predicate), "El predicado no puede ser nulo.");
         }
 
-        var tableName = typeof(T).Name;
+        var query = DapperRepository<T>.GetSqlQueryFromExpression(predicate);
+        var result = await connection.QueryAsync<T>(query);
 
-        string whereClause = ExpressionToSqlTranslator.Translate(predicate);
-
-        var sql = $"SELECT 1 FROM {tableName} WHERE {whereClause}";
-
-        var result = await connection.QuerySingleOrDefaultAsync<int>(sql);
-
-        return result > 0;
+        return result != null || result?.Count() > 0;
     }
 
     private static DynamicParameters GetParameters(T entity)

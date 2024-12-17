@@ -23,18 +23,8 @@ namespace UniqueDraw.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateClient([FromBody] ClientCreateDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            try
-            {
-                var client = await clientService.CreateClientAsync(request);
-                return CreatedAtAction(nameof(GetClientById), new { clientId = client.Id }, client);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var client = await clientService.CreateClientAsync(request);
+            return CreatedAtAction(nameof(GetClientById), new { clientId = client.Id }, client);
         }
 
         /// <summary>
@@ -47,15 +37,8 @@ namespace UniqueDraw.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RegenerateApiKey(Guid clientId)
         {
-            try
-            {
-                var apiKey = await clientService.RegenerateApiKeyAsync(clientId);
-                return Ok(apiKey);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var apiKey = await clientService.RegenerateApiKeyAsync(clientId);
+            return Ok(apiKey);
         }
 
         /// <summary>
@@ -68,18 +51,22 @@ namespace UniqueDraw.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> AuthenticateClient([FromBody] ClientLoginRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var token = await clientService.AuthenticateClientAsync(request);
+            return Ok(token);
+        }
 
-            try
-            {
-                var token = await clientService.AuthenticateClientAsync(request);
-                return Ok(token);
-            }
-            catch (Exception ex)
-            {
-                return Unauthorized(ex.Message);
-            }
+        /// <summary>
+        /// Autentica a un cliente usando su Api key.
+        /// </summary>
+        /// <param name="request">Credenciales del cliente.</param>
+        /// <returns>Un token de autenticación si las credenciales son correctas.</returns>
+        [HttpPost("{apiKey}/authenticate")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> AuthenticateClient(string apiKey)
+        {
+            var token = await clientService.AuthenticateClientAsync(apiKey);
+            return Ok(token);
         }
 
         /// <summary>
@@ -92,15 +79,8 @@ namespace UniqueDraw.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetClientById(Guid clientId)
         {
-            try
-            {
-                var client = await clientService.GetClientByIdAsync(clientId);
-                return Ok(client);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var client = await clientService.GetClientByIdAsync(clientId);
+            return Ok(client);
         }
     }
 }

@@ -5,11 +5,14 @@ using UniqueDraw.Domain.Ports.Helpers;
 using UniqueDraw.Domain.Exceptions;
 using UniqueDraw.Domain.Models.Create;
 using UniqueDraw.Domain.Attributes;
+using UniqueDraw.Domain.Ports;
+using UniqueDraw.Domain.Extensions;
 
 namespace UniqueDraw.Domain.Services;
 
 [DomainService]
-public class UserService(IUnitOfWork unitOfWork, IRepository<User> repository, IMappingService mapper)
+public class UserService(IUnitOfWork unitOfWork, IEncryptionService encryptionService,  
+    IRepository<User> repository, IMappingService mapper)
 {
     public async Task<UserResponseDTO> CreateUserAsync(UserCreateDTO request)
     {
@@ -18,8 +21,12 @@ public class UserService(IUnitOfWork unitOfWork, IRepository<User> repository, I
 
         var user = mapper.Map<User>(request);
 
+        user.EncryptProperties(encryptionService);
+
         await repository.AddAsync(user);
         await unitOfWork.CommitAsync();
+
+        user.DecryptProperties(encryptionService);
 
         return mapper.Map<UserResponseDTO>(user);
     }

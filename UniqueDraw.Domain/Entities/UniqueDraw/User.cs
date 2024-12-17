@@ -5,7 +5,7 @@ namespace UniqueDraw.Domain.Entities.UniqueDraw;
 public class User : EntityBase
 {
     public Guid ClientId { get; set; }
-    public Client Client { get; set; } = new();
+    public Client Client { get; set; } = null!;
     [Encrypt]
     public string Name { get; set; } = string.Empty;
     [Encrypt]

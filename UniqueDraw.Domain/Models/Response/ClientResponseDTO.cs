@@ -6,4 +6,5 @@ public class ClientResponseDTO
     public string Name { get; set; } = string.Empty;
     public string ApiKey { get; set; } = string.Empty;
     public string UserName { get; set; } = string.Empty;
+    public string? Token { get; set; }
 }
