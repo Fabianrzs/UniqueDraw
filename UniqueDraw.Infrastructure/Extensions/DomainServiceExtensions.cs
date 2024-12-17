@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using UniqueDraw.Domain.Attributes;
+using UniqueDraw.Domain.Ports.Helpers;
+using UniqueDraw.Infrastructure.Adapters.Helpers;
 
 namespace UniqueDraw.Infrastructure.Extensions;
 public static class ServiceExtensions
@@ -14,6 +16,8 @@ public static class ServiceExtensions
         _services.AddRange(assembly.GetTypes()
                .Where(p => p.CustomAttributes.Any(x => x.AttributeType
                == typeof(DomainServiceAttribute))));
+
+        services.AddTransient<IMappingService,MappingService>();
 
         _services.ForEach(serviceType => services.AddTransient(serviceType));
 

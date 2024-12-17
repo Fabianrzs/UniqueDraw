@@ -2,8 +2,7 @@
 
 public class AppConstants
 {
-    public const string ApiProject = "TravelConnect.Api";
-    public const string ApplicationProject = "TravelConnect.Commons";
-    public const string InfrastructureProject = "TravelConnect.Infrastructure";
-    public const string DomainProject = "TravelConnect.Domain";
+    public const string ApiProject = "UniqueDraw.Api";
+    public const string InfrastructureProject = "UniqueDraw.Infrastructure";
+    public const string DomainProject = "UniqueDraw.Domain";
 }

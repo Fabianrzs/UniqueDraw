@@ -6,7 +6,7 @@ using UniqueDraw.Domain.Ports.Persistence;
 using UniqueDraw.Infrastructure.Helpers;
 
 namespace UniqueDraw.Infrastructure.Adapters.Persistence;
-public class DapperRepository<T>(IDbConnection connection) : IRepository<T> where T : class, IEntityBase<Guid>
+public class DapperRepository<T>(IDbConnection connection) : IRepository<T> where T : EntityBase
 {
     public async Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes)
     {
